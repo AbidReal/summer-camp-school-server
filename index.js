@@ -23,24 +23,45 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const classesCollection = client
       .db("schoolMartialArtDB")
       .collection("classes");
+    const instructorsCollection = client
+      .db("schoolMartialArtDB")
+      .collection("instructors");
+    const selectedClassesCollection = client
+      .db("schoolMartialArtDB")
+      .collection("selectedClasses");
 
+    //classes page data
     app.get("/classes", async (req, res) => {
       const result = await classesCollection.find().toArray();
       res.send(result);
     });
 
     //instructors page data
-    const instructorsCollection = client
-      .db("schoolMartialArtDB")
-      .collection("instructors");
-
     app.get("/instructors", async (req, res) => {
       const result = await instructorsCollection.find().toArray();
+      res.send(result);
+    });
+
+    //selected Classes of cart collection
+    app.get("/selected-classes", async (req, res) => {
+      const email = req.query.email;
+      console.log(email);
+      if (!email) {
+        res.send([]);
+      }
+      const query = { email: email };
+      const result = await selectedClassesCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.post("/selected-classes", async (req, res) => {
+      const item = req.body;
+      console.log(item);
+      const result = await selectedClassesCollection.insertOne(item);
       res.send(result);
     });
 
