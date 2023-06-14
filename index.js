@@ -25,6 +25,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
+    const usersCollection = client.db("schoolMartialArtDB").collection("users");
     const classesCollection = client
       .db("schoolMartialArtDB")
       .collection("classes");
@@ -34,6 +35,13 @@ async function run() {
     const selectedClassesCollection = client
       .db("schoolMartialArtDB")
       .collection("selectedClasses");
+
+    //users data
+    app.post("/users", async (req, res) => {
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
+      res.send(result);
+    });
 
     //classes page data
     app.get("/classes", async (req, res) => {
@@ -50,7 +58,7 @@ async function run() {
     //selected Classes of cart collection
     app.get("/selected-classes", async (req, res) => {
       const email = req.query.email;
-      console.log(email);
+      // console.log(email);
       if (!email) {
         res.send([]);
       }
@@ -60,7 +68,7 @@ async function run() {
     });
     app.post("/selected-classes", async (req, res) => {
       const item = req.body;
-      console.log(item);
+      // console.log(item);
       const result = await selectedClassesCollection.insertOne(item);
       res.send(result);
     });
