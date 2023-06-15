@@ -104,12 +104,17 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/pending-classes", async (req, res) => {
-      const pendingClass = req.body;
-      console.log(pendingClass);
-      const result = await pendingClassesCollection.insertOne(pendingClass);
-      res.send(result);
-    });
+    app.post(
+      "/pending-classes",
+      verifyJWT,
+      verifyInstructor,
+      async (req, res) => {
+        const pendingClass = req.body;
+        console.log(pendingClass);
+        const result = await pendingClassesCollection.insertOne(pendingClass);
+        res.send(result);
+      }
+    );
 
     //users data
     app.get("/users", verifyJWT, verifyAdmin, async (req, res) => {
