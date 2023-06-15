@@ -100,8 +100,16 @@ async function run() {
 
     //pending classes
     app.get("/pending-classes", async (req, res) => {
-      const result = await pendingClassesCollection.find().toArray();
-      res.send(result);
+      const email = req.query.email; // Get the email from the query parameters
+      const filter = email ? { instructorEmail: email } : {}; // Create filter based on email presence
+
+      try {
+        const result = await pendingClassesCollection.find(filter).toArray();
+        res.send(result);
+      } catch (error) {
+        console.error("Error fetching pending classes:", error);
+        res.status(500).send("Error fetching pending classes");
+      }
     });
 
     app.post(
