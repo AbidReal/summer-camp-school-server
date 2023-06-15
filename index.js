@@ -115,6 +115,21 @@ async function run() {
         res.send(result);
       }
     );
+    //patch pending classes
+    app.patch("/pending-classes/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          status: "denied",
+        },
+      };
+      const result = await pendingClassesCollection.updateOne(
+        filter,
+        updateDoc
+      );
+      res.send(result);
+    });
 
     //users data
     app.get("/users", verifyJWT, verifyAdmin, async (req, res) => {
@@ -189,6 +204,15 @@ async function run() {
     //classes page data
     app.get("/classes", async (req, res) => {
       const result = await classesCollection.find().toArray();
+      res.send(result);
+    });
+
+    //classes post
+
+    app.post("/classes", async (req, res) => {
+      const item = req.body;
+      // console.log(item);
+      const result = await classesCollection.insertOne(item);
       res.send(result);
     });
 
