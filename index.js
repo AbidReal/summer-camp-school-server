@@ -121,14 +121,20 @@ async function run() {
       const filter = { _id: new ObjectId(id) };
       const updateDoc = {
         $set: {
-          status: "denied",
+          status: req.body.status,
         },
       };
-      const result = await pendingClassesCollection.updateOne(
-        filter,
-        updateDoc
-      );
-      res.send(result);
+
+      try {
+        const result = await pendingClassesCollection.updateOne(
+          filter,
+          updateDoc
+        );
+        res.send(result);
+      } catch (error) {
+        console.error("Error updating class status:", error);
+        res.status(500).send("Error updating class status");
+      }
     });
 
     //users data
