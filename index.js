@@ -51,6 +51,9 @@ async function run() {
     const classesCollection = client
       .db("schoolMartialArtDB")
       .collection("classes");
+    const pendingClassesCollection = client
+      .db("schoolMartialArtDB")
+      .collection("pendingClasses");
     const instructorsCollection = client
       .db("schoolMartialArtDB")
       .collection("instructors");
@@ -94,6 +97,19 @@ async function run() {
       }
       next();
     };
+
+    //pending classes
+    app.get("/pending-classes", async (req, res) => {
+      const result = await pendingClassesCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.post("/pending-classes", async (req, res) => {
+      const pendingClass = req.body;
+      console.log(pendingClass);
+      const result = await pendingClassesCollection.insertOne(pendingClass);
+      res.send(result);
+    });
 
     //users data
     app.get("/users", verifyJWT, verifyAdmin, async (req, res) => {
