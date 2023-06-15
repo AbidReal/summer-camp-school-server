@@ -127,11 +127,15 @@ async function run() {
     app.patch("/pending-classes/:id", async (req, res) => {
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
-      const updateDoc = {
-        $set: {
-          status: req.body.status,
-        },
-      };
+      const updateDoc = {};
+
+      if (req.body.status) {
+        updateDoc.$set = { status: req.body.status };
+      }
+
+      if (req.body.feedback) {
+        updateDoc.$set = { feedback: req.body.feedback };
+      }
 
       try {
         const result = await pendingClassesCollection.updateOne(
@@ -140,8 +144,8 @@ async function run() {
         );
         res.send(result);
       } catch (error) {
-        console.error("Error updating class status:", error);
-        res.status(500).send("Error updating class status");
+        console.error("Error updating class:", error);
+        res.status(500).send("Error updating class");
       }
     });
 
