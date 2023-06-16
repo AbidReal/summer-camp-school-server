@@ -244,6 +244,28 @@ async function run() {
       res.send(result);
     });
 
+    //classes search
+    const { ObjectId } = require("mongodb");
+
+    app.get("/classes/:classId", async (req, res) => {
+      const classId = req.params.classId;
+
+      try {
+        const result = await classesCollection.findOne({
+          _id: new ObjectId(classId),
+        });
+
+        if (result) {
+          res.send(result);
+        } else {
+          res.status(404).send("Class not found");
+        }
+      } catch (error) {
+        console.error(error);
+        res.status(500).send("An error occurred");
+      }
+    });
+
     //classes post
 
     app.post("/classes", async (req, res) => {
@@ -341,6 +363,8 @@ async function run() {
         .toArray();
       res.send(result);
     });
+
+    //get all payment
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
