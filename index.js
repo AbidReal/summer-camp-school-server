@@ -220,6 +220,16 @@ async function run() {
       res.send(result);
     });
 
+    //load the top 6 classes by available seats
+    app.get("/top-classes", async (req, res) => {
+      const result = await classesCollection
+        .find()
+        .sort({ availableSeats: -1 })
+        .limit(6)
+        .toArray();
+      res.send(result);
+    });
+
     //classes page data
     app.get("/classes", async (req, res) => {
       const result = await classesCollection.find().toArray();
