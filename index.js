@@ -338,6 +338,21 @@ async function run() {
       };
 
       const deleteResult = await selectedClassesCollection.deleteOne(query);
+      console.log(payment.classId);
+
+      const classQuery = {
+        _id: new ObjectId(payment.classId),
+      };
+
+      const classData = await classesCollection.findOne(classQuery);
+
+      if (classData) {
+        const updatedSeats = classData.availableSeats - 1;
+
+        const updateResult = await classesCollection.updateOne(classQuery, {
+          $set: { availableSeats: updatedSeats },
+        });
+      }
 
       res.send({ insertResult, deleteResult });
     });
