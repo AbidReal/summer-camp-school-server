@@ -220,6 +220,11 @@ async function run() {
       res.send(result);
     });
 
+    //load the top 6 Instructors
+    app.get("/top-instructors", async (req, res) => {
+      const result = await instructorsCollection.find().limit(6).toArray();
+      res.send(result);
+    });
     //load the top 6 classes by available seats
     app.get("/top-classes", async (req, res) => {
       const result = await classesCollection
