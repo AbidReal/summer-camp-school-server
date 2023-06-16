@@ -61,6 +61,9 @@ async function run() {
     const selectedClassesCollection = client
       .db("schoolMartialArtDB")
       .collection("selectedClasses");
+    const paymentCollection = client
+      .db("schoolMartialArtDB")
+      .collection("payments");
 
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -300,6 +303,21 @@ async function run() {
       res.send({
         clientSecret: paymentIntent.client_secret,
       });
+    });
+
+    //payment related apis
+    app.post("/payments", verifyJWT, async (req, res) => {
+      const payment = req.body;
+      const insertResult = await paymentCollection.insertOne(payment);
+
+      console.log(payment.selectedId);
+      const query = {
+        _id: new ObjectId(payment.selectedId),
+      };
+
+      const deleteResult = await selectedClassesCollection.deleteOne(query);
+
+      res.send({ insertResult, deleteResult });
     });
 
     // Send a ping to confirm a successful connection
